@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final String url = "https://www.flickr.com/services/feeds/photos_public.gne?tags=aashish&format=json&nojsoncallback=1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        DataDownloader dd = new DataDownloader();
+        dd.execute(url);
         Log.d(TAG, "onCreate: ends");
     }
 
@@ -45,4 +49,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onOptionsItemSelected: returned");
         return super.onOptionsItemSelected(item);
     }
+
+
 }
