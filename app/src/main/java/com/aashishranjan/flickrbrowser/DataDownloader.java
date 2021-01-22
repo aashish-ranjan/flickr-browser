@@ -15,15 +15,24 @@ enum DownloadStatus {IDLE, NOT_INITIALIZED, PROCESSING, EMPTY_OR_FAILED, OK}
 class DataDownloader extends AsyncTask<String, Void, String> {
     private static final String TAG = "DataDownloader";
 
-    private DownloadStatus downloadStatus;
+    interface DownloadCallback {
+        void onDownloadComplete(String s, DownloadStatus downloadStatus);
+    }
 
-    public DataDownloader() {
+    private DownloadStatus downloadStatus;
+    private final DownloadCallback downloadCallback;
+
+    public DataDownloader(DownloadCallback callback) {
         this.downloadStatus = DownloadStatus.IDLE;
+        this.downloadCallback = callback;
     }
 
     @Override
     protected void onPostExecute(String s) {
-        Log.d(TAG, "onPostExecute: The downloaded string is " + s);
+//        Log.d(TAG, "onPostExecute: The downloaded string is " + s);
+        if (downloadCallback != null) {
+            downloadCallback.onDownloadComplete(s, downloadStatus);
+        }
         super.onPostExecute(s);
     }
 

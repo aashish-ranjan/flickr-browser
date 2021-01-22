@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DataDownloader.DownloadCallback {
     private static final String TAG = "MainActivity";
     private static final String url = "https://www.flickr.com/services/feeds/photos_public.gne?tags=aashish&format=json&nojsoncallback=1";
 
@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DataDownloader dd = new DataDownloader();
-        dd.execute(url);
+        DataDownloader dataDownloader = new DataDownloader(this);
+        dataDownloader.execute(url);
         Log.d(TAG, "onCreate: ends");
     }
 
@@ -50,5 +50,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDownloadComplete(String data, DownloadStatus downloadStatus) {
+        if (downloadStatus == DownloadStatus.OK) {
+            Log.d(TAG, "onDownloadComplete: Downloaded data is: " + data);
+        } else {
+            //download or processing failed
+            Log.e(TAG, "onDownloadComplete: Failed with status " + downloadStatus);
+        }
+    }
 
 }
