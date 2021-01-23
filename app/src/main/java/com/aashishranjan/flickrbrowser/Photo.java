@@ -1,12 +1,21 @@
 package com.aashishranjan.flickrbrowser;
 
 class Photo {
-    String mTitle;
-    String mLink;
-    String mImageUrl;
-    String mAuthor;
-    String mAuthorId;
-    String mTags;
+    private String mTitle;
+    private String mLink;
+    private String mImageUrl;
+    private String mAuthor;
+    private String mAuthorId;
+    private String mTags;
+
+    Photo(String title, String link, String imageUrl, String author, String authorId, String tags) {
+        mTitle = title;
+        mLink = link;
+        mImageUrl = imageUrl;
+        mAuthor = author;
+        mAuthorId = authorId;
+        mTags = tags;
+    }
 
     String getTitle() {
         return mTitle;
