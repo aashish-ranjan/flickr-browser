@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements RawDataDownloader.DownloadCallback {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements JsonDataProcessor.JsonDataProvider {
     private static final String TAG = "MainActivity";
-    private static final String url = "https://www.flickr.com/services/feeds/photos_public.gne?tags=aashish&format=json&nojsoncallback=1";
+    private static final String baseUrl = "https://www.flickr.com/services/feeds/photos_public.gne";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +23,14 @@ public class MainActivity extends AppCompatActivity implements RawDataDownloader
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DataDownloader dataDownloader = new DataDownloader(this);
-        dataDownloader.execute(url);
         Log.d(TAG, "onCreate: ends");
+    }
+
+    @Override
+    protected void onResume() {
+        JsonDataProcessor dataProcessor = new JsonDataProcessor(this);
+        dataProcessor.executeOnSameThread(baseUrl, "en-us", false, "aashish,ranjan");
+        super.onResume();
     }
 
     @Override
@@ -51,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements RawDataDownloader
     }
 
     @Override
-    public void onDownloadComplete(String data, DownloadStatus downloadStatus) {
+    public void onDataAvailable(List<Photo> data, DownloadStatus downloadStatus) {
         if (downloadStatus == DownloadStatus.OK) {
             Log.d(TAG, "onDownloadComplete: Downloaded data is: " + data);
         } else {

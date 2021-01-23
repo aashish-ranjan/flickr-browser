@@ -29,7 +29,7 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-//        Log.d(TAG, "onPostExecute: The downloaded string is " + s);
+        Log.d(TAG, "onPostExecute: The downloaded string is " + s);
         if (this.downloadCallback != null) {
             this.downloadCallback.onDownloadComplete(s, downloadStatus);
         }
