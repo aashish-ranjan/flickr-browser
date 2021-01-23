@@ -12,17 +12,17 @@ import java.net.URL;
 
 enum DownloadStatus {IDLE, NOT_INITIALIZED, PROCESSING, EMPTY_OR_FAILED, OK}
 
-class DataDownloader extends AsyncTask<String, Void, String> {
-    private static final String TAG = "DataDownloader";
+class RawDataDownloader extends AsyncTask<String, Void, String> {
+    private static final String TAG = "RawDataDownloader";
+
+    private DownloadStatus downloadStatus;
+    private final DownloadCallback downloadCallback;
 
     interface DownloadCallback {
         void onDownloadComplete(String s, DownloadStatus downloadStatus);
     }
 
-    private DownloadStatus downloadStatus;
-    private final DownloadCallback downloadCallback;
-
-    public DataDownloader(DownloadCallback callback) {
+    public RawDataDownloader(DownloadCallback callback) {
         this.downloadStatus = DownloadStatus.IDLE;
         this.downloadCallback = callback;
     }
@@ -30,8 +30,8 @@ class DataDownloader extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
 //        Log.d(TAG, "onPostExecute: The downloaded string is " + s);
-        if (downloadCallback != null) {
-            downloadCallback.onDownloadComplete(s, downloadStatus);
+        if (this.downloadCallback != null) {
+            this.downloadCallback.onDownloadComplete(s, downloadStatus);
         }
         super.onPostExecute(s);
     }

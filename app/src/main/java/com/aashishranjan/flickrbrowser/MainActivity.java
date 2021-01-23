@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements DataDownloader.DownloadCallback {
+public class MainActivity extends AppCompatActivity implements RawDataDownloader.DownloadCallback {
     private static final String TAG = "MainActivity";
     private static final String url = "https://www.flickr.com/services/feeds/photos_public.gne?tags=aashish&format=json&nojsoncallback=1";
 
