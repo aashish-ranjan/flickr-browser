@@ -14,18 +14,24 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     private static final String TAG = "JsonDataProcessor";
 
     private JsonDataProvider mCallback;
+    private String mLanguage;
+    private boolean mMatchAll;
+    private String mTags;
 
-    public JsonDataProcessor(JsonDataProvider dataProvider) {
-        mCallback = dataProvider;
+    public JsonDataProcessor(JsonDataProvider callback, String language, boolean matchAll, String tags) {
+        mCallback = callback;
+        mLanguage = language;
+        mMatchAll = matchAll;
+        mTags = tags;
     }
 
     interface JsonDataProvider {
         void onDataAvailable(List<Photo> photoList, DownloadStatus status);
     }
 
-    void executeOnSameThread(String baseUrl, String language, boolean matchAll, String tags) {
+    void executeOnSameThread(String baseUrl) {
         Log.d(TAG, "executeOnSameThread: starts");
-        String destinationUrl = constructUri(baseUrl, language, matchAll, tags);
+        String destinationUrl = constructUri(baseUrl, mLanguage, mMatchAll, mTags);
 
         RawDataDownloader dataDownloader = new RawDataDownloader(this);
         dataDownloader.execute(destinationUrl);
@@ -34,7 +40,7 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     }
 
     private String constructUri(String baseUrl, String language, boolean matchAll, String tags) {
-        Log.d(TAG, "constructUri: starts");
+        Log.d(TAG, "constructUri: called");
 
         Uri uri = Uri.parse(baseUrl);
         Uri.Builder builder = uri.buildUpon();
