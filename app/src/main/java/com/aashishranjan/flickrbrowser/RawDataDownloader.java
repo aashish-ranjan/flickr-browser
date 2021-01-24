@@ -15,38 +15,39 @@ enum DownloadStatus {IDLE, NOT_INITIALIZED, PROCESSING, EMPTY_OR_FAILED, OK}
 class RawDataDownloader extends AsyncTask<String, Void, String> {
     private static final String TAG = "RawDataDownloader";
 
-    private DownloadStatus downloadStatus;
-    private final DownloadCallback downloadCallback;
+    private DownloadStatus mDownloadStatus;
+    private final DownloadCallback mDownloadCallback;
 
     interface DownloadCallback {
-        void onDownloadComplete(String s, DownloadStatus downloadStatus);
+        void onDownloadComplete(String data, DownloadStatus status);
     }
 
-    public RawDataDownloader(DownloadCallback callback) {
-        this.downloadStatus = DownloadStatus.IDLE;
-        this.downloadCallback = callback;
+    RawDataDownloader(DownloadCallback callback) {
+        mDownloadStatus = DownloadStatus.IDLE;
+        mDownloadCallback = callback;
     }
 
     @Override
     protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: The downloaded string is " + s);
-        if (this.downloadCallback != null) {
-            this.downloadCallback.onDownloadComplete(s, downloadStatus);
+        if (mDownloadCallback != null) {
+            mDownloadCallback.onDownloadComplete(s, mDownloadStatus);
         }
         super.onPostExecute(s);
     }
 
     @Override
     protected String doInBackground(String... strings) {
+        Log.d(TAG, "doInBackground called");
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 
         if (strings == null) {
-            this.downloadStatus = DownloadStatus.NOT_INITIALIZED;
+            mDownloadStatus = DownloadStatus.NOT_INITIALIZED;
             return null;
         }
         try {
-            this.downloadStatus = DownloadStatus.PROCESSING;
+            mDownloadStatus = DownloadStatus.PROCESSING;
             URL url = new URL(strings[0]);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -62,7 +63,7 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
                 result.append(line).append('\n');
             }
 
-            this.downloadStatus = DownloadStatus.OK;
+            mDownloadStatus = DownloadStatus.OK;
             return result.toString();
         } catch (MalformedURLException e) {
             Log.e(TAG, "doInBackground: Invalid URL " + e.getMessage());
@@ -78,10 +79,12 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
                 reader.close();
             } catch (IOException e) {
                 Log.e(TAG, "doInBackground: Error closing stream " + e.getMessage());
+            } catch (NullPointerException e) {
+                Log.e(TAG, "doInBackground: Null stream found: " + e.getMessage() );
             }
         }
 
-        this.downloadStatus = DownloadStatus.EMPTY_OR_FAILED;
+        mDownloadStatus = DownloadStatus.EMPTY_OR_FAILED;
         return null;
     }
 }
