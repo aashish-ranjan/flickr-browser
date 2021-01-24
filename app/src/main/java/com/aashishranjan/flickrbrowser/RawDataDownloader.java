@@ -27,6 +27,16 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
         mDownloadCallback = callback;
     }
 
+    void runOnSameThread(String s) {
+        Log.d(TAG, "runOnSameThread starts");
+        if (mDownloadCallback != null) {
+//            String result = doInBackground(s);
+//            mDownloadCallback.onDownloadComplete(result, mDownloadStatus);
+            mDownloadCallback.onDownloadComplete(doInBackground(s), mDownloadStatus);
+        }
+        Log.d(TAG, "runOnSameThread ends");
+    }
+
     @Override
     protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: The downloaded string is " + s);
@@ -75,7 +85,7 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
             if (connection != null) {
                 connection.disconnect();
             }
-            if(reader != null) {
+            if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {

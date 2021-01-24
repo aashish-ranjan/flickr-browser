@@ -1,6 +1,7 @@
 package com.aashishranjan.flickrbrowser;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
+class JsonDataProcessor extends AsyncTask<String, Void, List<Photo>> implements RawDataDownloader.DownloadCallback {
     private static final String TAG = "JsonDataProcessor";
 
     private List<Photo> mPhotoList = null;
@@ -19,6 +20,9 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     private String mBaserUrl;
     private String mLanguage;
     private boolean mMatchAll;
+
+    private boolean runningOnSameThread = false;
+    private DownloadStatus mDownloadStatus = DownloadStatus.NOT_INITIALIZED;
 
     interface JsonDataProvider {
         void onDataAvailable(List<Photo> data, DownloadStatus status);
@@ -33,12 +37,35 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
 
     void executeOnSameThread(String searchTag) {
         Log.d(TAG, "executeOnSameThread: starts");
+        runningOnSameThread = true;
         String destinationUrl = constructUri(mBaserUrl, mLanguage, mMatchAll, searchTag);
 
         RawDataDownloader dataDownloader = new RawDataDownloader(this);
         dataDownloader.execute(destinationUrl);
 
         Log.d(TAG, "executeOnSameThread: ends");
+    }
+
+    @Override
+    protected void onPostExecute(List<Photo> photoList) {
+        if (mCallback != null) {
+            mCallback.onDataAvailable(mPhotoList, mDownloadStatus);
+        }
+        super.onPostExecute(photoList);
+    }
+
+    @Override
+    protected List<Photo> doInBackground(String... params) {
+        Log.d(TAG, "doInBackground starts");
+
+        String destinationUrl = constructUri(mBaserUrl, mLanguage, mMatchAll, params[0]);
+
+        RawDataDownloader dataDownloader = new RawDataDownloader(this);
+        dataDownloader.runOnSameThread(destinationUrl);
+        Log.d(TAG, "doInBackground ends");
+
+        return mPhotoList;
+
     }
 
     private String constructUri(String baseUrl, String language, boolean matchAll, String tags) {
@@ -88,9 +115,10 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
                 downloadStatus = DownloadStatus.EMPTY_OR_FAILED;
             }
         }
-        if (mCallback != null) {
-            mCallback.onDataAvailable(photoList, downloadStatus);
+        if (runningOnSameThread && mCallback != null) {
+            mCallback.onDataAvailable(mPhotoList, downloadStatus);
         }
+        mDownloadStatus = downloadStatus;
         Log.d(TAG, "onDownloadComplete: ends");
     }
 }
