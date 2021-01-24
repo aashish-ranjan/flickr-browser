@@ -75,12 +75,12 @@ class RawDataDownloader extends AsyncTask<String, Void, String> {
             if (connection != null) {
                 connection.disconnect();
             }
-            try {
-                reader.close();
-            } catch (IOException e) {
-                Log.e(TAG, "doInBackground: Error closing stream " + e.getMessage());
-            } catch (NullPointerException e) {
-                Log.e(TAG, "doInBackground: Null stream found: " + e.getMessage() );
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "doInBackground: Error closing stream " + e.getMessage());
+                }
             }
         }
 

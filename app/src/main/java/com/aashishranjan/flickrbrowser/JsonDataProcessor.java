@@ -13,20 +13,22 @@ import java.util.List;
 class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     private static final String TAG = "JsonDataProcessor";
 
+    private List<Photo> mPhotoList = null;
+
     private JsonDataProvider mCallback;
     private String mLanguage;
     private boolean mMatchAll;
     private String mTags;
 
-    public JsonDataProcessor(JsonDataProvider callback, String language, boolean matchAll, String tags) {
+    interface JsonDataProvider {
+        void onDataAvailable(List<Photo> data, DownloadStatus status);
+    }
+
+    JsonDataProcessor(JsonDataProvider callback, String language, boolean matchAll, String tags) {
         mCallback = callback;
         mLanguage = language;
         mMatchAll = matchAll;
         mTags = tags;
-    }
-
-    interface JsonDataProvider {
-        void onDataAvailable(List<Photo> photoList, DownloadStatus status);
     }
 
     void executeOnSameThread(String baseUrl) {
@@ -57,7 +59,7 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     @Override
     public void onDownloadComplete(String data, DownloadStatus downloadStatus) {
         Log.d(TAG, "onDownloadComplete: starts");
-        List<Photo> photoList = new ArrayList<>();
+        mPhotoList = new ArrayList<>();
         if (downloadStatus == DownloadStatus.OK) {
 
             try {
@@ -68,21 +70,21 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
                     JSONObject jsonPhoto = itemJsonArray.getJSONObject(i);
 
                     String title = jsonPhoto.getString("title");
-                    String link = jsonPhoto.getString("link");
                     String author = jsonPhoto.getString("author");
                     String authorId = jsonPhoto.getString("author_id");
                     String tags = jsonPhoto.getString("tags");
 
                     JSONObject jsonMedia = jsonPhoto.getJSONObject("media");
                     String imageUrl = jsonMedia.getString("m");
-                    imageUrl = imageUrl.replaceFirst("_m", "_b");
+
+                    String link = imageUrl.replaceFirst("_m", "_b");
 
                     Photo photo = new Photo(title, link, imageUrl, author, authorId, tags);
-                    photoList.add(photo);
+                    mPhotoList.add(photo);
                 }
             } catch (JSONException jsone) {
                 jsone.printStackTrace();
-                Log.e(TAG, "onDownloadComplete: Error in processing the json" + jsone.getMessage());
+                Log.e(TAG, "onDownloadComplete: Error processing the json" + jsone.getMessage());
                 downloadStatus = DownloadStatus.EMPTY_OR_FAILED;
             }
         }
