@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume starts");
-        JsonDataProcessor dataProcessor = new JsonDataProcessor(this, "en-us", false, "aashish,ranjan");
-        dataProcessor.executeOnSameThread(baseUrl);
+        JsonDataProcessor dataProcessor = new JsonDataProcessor(this, baseUrl,"en-us", false);
+        dataProcessor.executeOnSameThread("aashish,ranjan");
         super.onResume();
         Log.d(TAG, "onResume ends");
     }
