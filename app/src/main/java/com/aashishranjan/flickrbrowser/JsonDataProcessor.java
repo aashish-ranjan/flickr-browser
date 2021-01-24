@@ -16,6 +16,7 @@ class JsonDataProcessor implements RawDataDownloader.DownloadCallback {
     private List<Photo> mPhotoList = null;
 
     private JsonDataProvider mCallback;
+    private String mBaserUrl;
     private String mLanguage;
     private boolean mMatchAll;
 
