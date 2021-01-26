@@ -4,16 +4,21 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements JsonDataProcessor.JsonDataProvider {
     private static final String TAG = "MainActivity";
     private static final String baseUrl = "https://www.flickr.com/services/feeds/photos_public.gne";
+
+    private FlickrRecyclerViewAdapter mFlickrRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,11 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        RecyclerView flickrRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
+        flickrRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mFlickrRecyclerViewAdapter = new FlickrRecyclerViewAdapter(this, new ArrayList<Photo>());
+        flickrRecyclerView.setAdapter(mFlickrRecyclerViewAdapter);
 
         Log.d(TAG, "onCreate: ends");
     }
@@ -63,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
     @Override
     public void onDataAvailable(List<Photo> data, DownloadStatus downloadStatus) {
         if (downloadStatus == DownloadStatus.OK) {
-            Log.d(TAG, "onDownloadComplete: Downloaded data is: " + data);
+            mFlickrRecyclerViewAdapter.loadNewData(data);
         } else {
             //download or processing failed
             Log.e(TAG, "onDownloadComplete: Failed with status " + downloadStatus);
