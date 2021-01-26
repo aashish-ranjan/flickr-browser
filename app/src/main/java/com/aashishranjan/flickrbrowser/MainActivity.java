@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements JsonDataProcessor.JsonDataProvider {
+public class MainActivity extends AppCompatActivity implements JsonDataProcessor.JsonDataProvider, RecyclerItemClickListener.RecyclerTouchListener {
     private static final String TAG = "MainActivity";
     private static final String baseUrl = "https://www.flickr.com/services/feeds/photos_public.gne";
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
         flickrRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFlickrRecyclerViewAdapter = new FlickrRecyclerViewAdapter(this, new ArrayList<Photo>());
         flickrRecyclerView.setAdapter(mFlickrRecyclerViewAdapter);
+        flickrRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, flickrRecyclerView, this));
 
         Log.d(TAG, "onCreate: ends");
     }
@@ -78,6 +81,18 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
             //download or processing failed
             Log.e(TAG, "onDownloadComplete: Failed with status " + downloadStatus);
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick: called");
+        Toast.makeText(this, "item clicked at position " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        Log.d(TAG, "onItemLongClick: called");
+        Toast.makeText(this, "item long clicked at position " + position, Toast.LENGTH_SHORT).show();
     }
 
 }
