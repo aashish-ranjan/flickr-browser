@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
+    static final String PHOTO_TRANSFER = "photo_transfer";
 
     void activateToolbar(boolean enableHome) {
         ActionBar actionBar = getSupportActionBar();

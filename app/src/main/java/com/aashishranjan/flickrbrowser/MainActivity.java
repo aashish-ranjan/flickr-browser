@@ -1,5 +1,6 @@
 package com.aashishranjan.flickrbrowser;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,7 @@ public class MainActivity extends BaseActivity implements JsonDataProcessor.Json
         Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        activateToolbar(true);
+        activateToolbar(false);
 
         RecyclerView flickrRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
         flickrRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -89,7 +90,9 @@ public class MainActivity extends BaseActivity implements JsonDataProcessor.Json
     @Override
     public void onItemLongClick(View view, int position) {
         Log.d(TAG, "onItemLongClick: called");
-        Toast.makeText(this, "item long clicked at position " + position, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, PhotoDetailsActivity.class);
+        intent.putExtra(PHOTO_TRANSFER, mFlickrRecyclerViewAdapter.getPhoto(position));
+        startActivity(intent);
     }
 
 }
