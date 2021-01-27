@@ -2,8 +2,6 @@ package com.aashishranjan.flickrbrowser;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements JsonDataProcessor.JsonDataProvider, RecyclerItemClickListener.RecyclerTouchListener {
+public class MainActivity extends BaseActivity implements JsonDataProcessor.JsonDataProvider, RecyclerItemClickListener.RecyclerTouchListener {
     private static final String TAG = "MainActivity";
     private static final String baseUrl = "https://www.flickr.com/services/feeds/photos_public.gne";
 
@@ -27,8 +25,7 @@ public class MainActivity extends AppCompatActivity implements JsonDataProcessor
         Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        activateToolbar(true);
 
         RecyclerView flickrRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
         flickrRecyclerView.setLayoutManager(new LinearLayoutManager(this));
