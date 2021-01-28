@@ -1,6 +1,7 @@
 package com.aashishranjan.flickrbrowser;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,14 +19,16 @@ public class PhotoDetailsActivity extends BaseActivity {
         Intent intent = getIntent();
         Photo photo = (Photo) intent.getSerializableExtra(PHOTO_TRANSFER);
         if (photo != null) {
+            Resources resources = getResources();
+
             TextView photoAuthor = (TextView) findViewById(R.id.photo_author);
-            photoAuthor.setText("Author: " + photo.getAuthor());
+            photoAuthor.setText(resources.getString(R.string.photo_author_text, photo.getAuthor()));
 
             TextView photoTitle = (TextView) findViewById(R.id.photo_title);
-            photoTitle.setText("Title: " + photo.getTitle());
+            photoTitle.setText(resources.getString(R.string.photo_title_text, photo.getTitle()));
 
             TextView photoTags = (TextView) findViewById(R.id.photo_tags);
-            photoTags.setText("Tags: " + photo.getTags());
+            photoTags.setText(resources.getString(R.string.photo_tags_text, photo.getTags()));
 
             ImageView photoImage = (ImageView) findViewById(R.id.photo_image);
             Picasso.get()
