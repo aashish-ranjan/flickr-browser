@@ -66,6 +66,11 @@ public class MainActivity extends BaseActivity implements JsonDataProcessor.Json
         if (id == R.id.action_settings) {
             return true;
         }
+        if(id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+            return true;
+        }
 
         Log.d(TAG, "onOptionsItemSelected: returned");
         return super.onOptionsItemSelected(item);
