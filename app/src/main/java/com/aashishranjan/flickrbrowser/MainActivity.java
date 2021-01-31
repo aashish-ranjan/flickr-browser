@@ -1,11 +1,13 @@
 package com.aashishranjan.flickrbrowser;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,9 +42,13 @@ public class MainActivity extends BaseActivity implements JsonDataProcessor.Json
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume starts");
-        JsonDataProcessor dataProcessor = new JsonDataProcessor(this, baseUrl, "en-us", false);
-//        dataProcessor.executeOnSameThread("aashish,ranjan");
-        dataProcessor.execute("aashish,ranjan");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String searchQuery = sharedPreferences.getString(SEARCH_QUERY, "");
+        if (searchQuery.length() > 0) {
+            JsonDataProcessor dataProcessor = new JsonDataProcessor(this, baseUrl, "en-us", true);
+//            dataProcessor.executeOnSameThread("searchQuery");
+            dataProcessor.execute(searchQuery);
+        }
         super.onResume();
         Log.d(TAG, "onResume ends");
     }

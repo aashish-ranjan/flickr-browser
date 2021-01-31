@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     static final String PHOTO_TRANSFER = "photo_transfer";
+    static final String SEARCH_QUERY = "search_query";
 
     void activateToolbar(boolean enableHome) {
         ActionBar actionBar = getSupportActionBar();
