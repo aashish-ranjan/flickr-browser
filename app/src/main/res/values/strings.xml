@@ -17,4 +17,5 @@
     <string name="photo_author_text">Author: %s</string>
     <string name="photo_tags_text">Tags: %s</string>
     <string name="action_search">Search</string>
+    <string name="search_bar_hint">Enter search tags</string>
 </resources>
